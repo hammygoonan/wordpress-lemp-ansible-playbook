@@ -1,0 +1,8 @@
+server {
+    listen 80;
+    server_name {{ site_url }};
+
+    location /.well-known {
+        alias {{ home_path }}/.well-known;
+    }
+}

@@ -1,0 +1,56 @@
+---
+- name: Sets the root password
+  mysql_user: user=root password="{{ database_root_password }}" host=localhost
+  become: true
+
+- name: Deletes anonymous MySQL server user for localhost
+  mysql_user: user="" state="absent"
+  become: true
+
+- name: Secures the MySQL root user for IPV6 localhost (::1)
+  mysql_user: user="root" password="{{ database_root_password }}" host="::1"
+  become: true
+
+- name: Secures the MySQL root user for IPV4 localhost (127.0.0.1)
+  mysql_user: user="root" password="{{ database_root_password }}" host="127.0.0.1"
+  become: true
+
+- name: Secures the MySQL root user for localhost domain (localhost)
+  mysql_user: user="root" password="{{ database_root_password }}" host="localhost"
+  become: true
+
+- name: Removes the MySQL test database
+  mysql_db: db=test state=absent
+  become: true
+
+- name: Create a new database
+  mysql_db:
+    name: "{{ database_name }}"
+    state: present
+  become: true
+
+- name: Create mysql user
+  mysql_user:
+    user: "{{ database_username }}"
+    password: "{{ database_user_password }}"
+    host: localhost
+    priv: "*.*:ALL"
+  become: true
+
+- name: copy database export to server
+  copy:
+    src: database.sql
+    dest: "{{ home_path }}/database.sql"
+
+- name: Import database
+  mysql_db:
+    state: import
+    name: "{{ database_name }}"
+    target: "{{ home_path }}/database.sql"
+    login_password: "{{ database_user_password }}"
+    login_user: "{{ database_username }}"
+
+- name: delete database export
+  file:
+    path: "{{ home_path }}/database.sql"
+    state: absent

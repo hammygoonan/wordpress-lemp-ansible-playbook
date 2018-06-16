@@ -1,0 +1,37 @@
+server {
+    listen 80;
+    server_name {{ site_url }};
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    server_name {{ site_url }};
+
+    root {{ webroot }};
+    index index.php index.html index.htm index.nginx-debian.html;
+
+    ssl    on;
+    ssl_certificate        /etc/letsencrypt/live/{{ site_url }}/fullchain.pem;
+    ssl_certificate_key    /etc/letsencrypt/live/{{ site_url }}/privkey.pem;
+
+    access_log {{ home_path }}/logs/nginx.access.log;
+    error_log {{ home_path }}/logs/nginx.error.log;
+
+    location /.well_known {
+        alias {{ home_path }}/.well_known;
+    }
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+
+    location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/run/php/php7.0-fpm.sock;
+    }
+
+    location ~ /\.ht {
+        deny all;
+    }
+}

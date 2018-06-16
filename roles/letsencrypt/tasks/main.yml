@@ -1,0 +1,40 @@
+---
+- name: add certbot repo
+  apt_repository:
+    repo: ppa:certbot/certbot
+  become: True
+
+- name: update packages
+  apt: upgrade=dist update_cache=yes
+  become: True
+
+- name: install certbot
+  apt: upgrade=dist update_cache=yes
+  become: True
+
+- name: Install common packages
+  apt: package=python-certbot-nginx update_cache=yes
+  become: True
+
+- name: Copy temp Nginx config
+  template: src=nginx.j2 dest=/etc/nginx/sites-available/{{ site_url }}
+  become: True
+
+- name: symlink temp Nginx config
+  file: src=/etc/nginx/sites-available/{{ site_url }} dest=/etc/nginx/sites-enabled/{{ site_url }} state=link
+  become: True
+
+- name: restart nginx
+  service: name=nginx state=restarted
+  become: True
+
+- name: install certificate
+  command: certbot -n --nginx certonly -w {{ home_path }} -d {{ site_url }} -m {{ letsencrypt_email }} --agree-tos
+  become: True
+
+- name: Add letsencrypt cronjob for cert renewal
+  cron:
+    name: certbot_renewal
+    special_time: weekly
+    job: certbot renew --post-hook "service nginx restart"
+  become: True

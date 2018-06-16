@@ -1,0 +1,14 @@
+---
+site_url:
+user:
+
+home_path:
+log_dir:
+webroot:
+
+letsencrypt_email:
+
+database_name:
+database_username:
+database_user_password:
+database_root_password: 

@@ -1,0 +1,9 @@
+---
+- hosts: website
+  roles:
+     - common
+     - letsencrypt
+     - wordpress
+     - nginx
+     - mariadb
+     - php
