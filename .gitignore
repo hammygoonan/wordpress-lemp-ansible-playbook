@@ -3,3 +3,4 @@ hosts
 group_vars/*/vars
 roles/mariadb/files/database.sql
 roles/wordpress/files/uploads
+.retry
