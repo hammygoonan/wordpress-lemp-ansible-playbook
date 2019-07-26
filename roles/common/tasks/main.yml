@@ -4,16 +4,16 @@
   become: True
 
 - name: Install common packages
-  apt: package={{ item }} update_cache=yes
+  apt:
+    package:
+      - software-properties-common
+      - nginx
+      - mariadb-server
+      - php-fpm
+      - php-mysql
+      - python-mysqldb
+    update_cache: yes
   become: True
-  with_items:
-    - software-properties-common
-    - nginx
-    - mariadb-server
-    - php-fpm
-    - php-mysql
-    - python-mysqldb
-
 
 - name: make log dir
   file: path={{ log_dir }} state=directory

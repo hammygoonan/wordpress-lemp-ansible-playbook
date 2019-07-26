@@ -1,7 +1,7 @@
 ---
 - name: update php config
   lineinfile:
-    path: /etc/php/7.0/fpm/php.ini
+    path: "/etc/php/{{ php_version }}/fpm/php.ini"
     regexp: 'cgi.fix_pathinfo=0'
     line: 'cgi.fix_pathinfo=0'
   become: yes

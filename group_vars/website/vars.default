@@ -2,13 +2,15 @@
 site_url:
 user:
 
-home_path:
-log_dir:
-webroot:
+home_path: /home/{{ user }}/
+log_dir: {{ home_path }}log/
+webroot: {{ home_path }}/public_html
+
+php_version: 7.2
 
 letsencrypt_email:
 
 database_name:
 database_username:
 database_user_password:
-database_root_password: 
+database_root_password:
